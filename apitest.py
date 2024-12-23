@@ -12,7 +12,7 @@ If everything works, you should see a summary of your budgets
 Otherwise you will see an error
 """
 
-from ynab_sdk import YNAB
+from ynab import YNAB
 
 try:
     api_key = "API_KEY_HERE"

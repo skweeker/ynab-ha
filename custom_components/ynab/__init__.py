@@ -8,10 +8,11 @@ from datetime import date, timedelta
 import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+import ynab as YNAB
 from homeassistant.const import CONF_API_KEY
 from homeassistant.helpers import discovery
 from homeassistant.util import Throttle
-from ynab_sdk import YNAB
+from ynab.rest import ApiException
 
 from .const import (
     CONF_NAME,
@@ -102,6 +103,7 @@ class YnabData:
         """Initialize the class."""
         self.hass = hass
         self.api_key = config[DOMAIN].get(CONF_API_KEY)
+        self.host = config[DOMAIN].get(DEFAULT_API_ENDPOINT)
         self.budget = config[DOMAIN].get("budget")
         self.categories = config[DOMAIN].get("categories")
         self.accounts = config[DOMAIN].get("accounts")
@@ -118,8 +120,11 @@ class YnabData:
 
         # setup YNAB API
         await self.request_import()
+        configuration = YNAB.Configuration()
+        configuration.api_key['Authorization'] = self.api_key
+        configuration.host = "https://api.youneedabudget.com/v1"
 
-        self.ynab = YNAB(self.api_key)
+        self.ynab = YNAB.AccountsApi(YNAB.ApiClient(configuration))
         self.all_budgets = await self.hass.async_add_executor_job(
             self.ynab.budgets.get_budgets
         )
@@ -289,7 +294,6 @@ class YnabData:
 
         except Exception as error:  # pylint: disable=broad-except
             _LOGGER.debug("Error encounted during forced import - %s", error)
-
 
 async def check_files(hass):
     """Return bool that indicates if all files are present."""
