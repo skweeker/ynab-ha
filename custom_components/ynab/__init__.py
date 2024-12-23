@@ -9,6 +9,7 @@ import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 import ynab as YNAB
+#https://github.com/davidhao3300/ynab-python/tree/master
 from homeassistant.const import CONF_API_KEY
 from homeassistant.helpers import discovery
 from homeassistant.util import Throttle
@@ -124,7 +125,7 @@ class YnabData:
         configuration.api_key['Authorization'] = self.api_key
         configuration.host = "https://api.youneedabudget.com/v1"
 
-        self.ynab = YNAB.AccountsApi(YNAB.ApiClient(configuration))
+        self.ynab = YNAB.ApiClient(configuration)
         self.all_budgets = await self.hass.async_add_executor_job(
             self.ynab.budgets.get_budgets
         )
