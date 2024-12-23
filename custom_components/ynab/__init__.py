@@ -127,10 +127,10 @@ class YnabData:
 
         self.ynab = YNAB.ApiClient(configuration)
         self.all_budgets = await self.hass.async_add_executor_job(
-            self.ynab.budgets.get_budgets
+            self.ynab.BudgetsApi.get_budgets
         )
         self.raw_budget = await self.hass.async_add_executor_job(
-            self.ynab.budgets.get_budget, self.budget
+            self.ynab.BudgetsApi.get_budget, self.budget
         )
 
         # get budget summary
