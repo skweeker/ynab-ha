@@ -123,11 +123,12 @@ class YnabData:
         await self.request_import()
         configuration = YNAB.Configuration()
         configuration.api_key['Authorization'] = self.api_key
+        configuration.api_key_prefix['Authorization'] = 'Bearer'
         configuration.host = "https://api.youneedabudget.com/v1"
 
         self.ynab = YNAB.ApiClient(configuration)
         self.all_budgets = await self.hass.async_add_executor_job(
-            YNAB.BudgetsApi(self.ynab).get_budgets
+            YNAB.BudgetsApi(self.ynab).get_budgets()
         )
         self.raw_budget = await self.hass.async_add_executor_job(
             YNAB.BudgetsApi(self.ynab).get_budgets, self.budget
