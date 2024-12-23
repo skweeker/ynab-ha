@@ -127,18 +127,18 @@ class YnabData:
 
         self.ynab = YNAB.ApiClient(configuration)
         self.all_budgets = await self.hass.async_add_executor_job(
-            self.ynab.BudgetsApi.get_budgets
+            YNAB.BudgetApi(self.ynab).get_budgets
         )
         self.raw_budget = await self.hass.async_add_executor_job(
-            self.ynab.BudgetsApi.get_budget, self.budget
+            YNAB.BudgetApi(self.ynab).get_budgets, self.budget
         )
 
         # get budget summary
         self.get_all_budgets = self.all_budgets.data.budgets
         if self.get_all_budgets:
-            _LOGGER.debug("Found %s budgets", len(self.get_all_budgets))
+            _LOGGER.info("Found %s budgets", len(self.get_all_budgets))
             for budget in self.get_all_budgets:
-                _LOGGER.debug("Budget name: %s - id: %s", budget.name, budget.id)
+                _LOGGER.info("Budget name: %s - id: %s", budget.name, budget.id)
         else:
             _LOGGER.errors("Unable to retrieve budgets summary")
 
